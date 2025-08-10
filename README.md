@@ -21,9 +21,7 @@ The project utilized the following tools and techniques, with a particular focus
   - **Views** to simplify complex queries  
   - **Window functions** for partitioned data analysis  
 
----
-
-## 🇵🇱 Wersja Polska
+## 📊  Wersja Polska
 
 W ramach tego projektu przeprowadzono **analizę problemu biznesowego** na podstawie przykładowej bazy danych transakcji kartowych.  
 Celem było zidentyfikowanie kluczowych kwestii i zaproponowanie rozwiązań.  
