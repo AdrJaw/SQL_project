@@ -41,6 +41,5 @@ W projekcie wykorzystano następujące narzędzia i techniki, w szczególności 
   - Funkcje agregujące (`GROUP BY`, `COUNT`, `SUM`)  
   - **Widoki** (`VIEW`) do uproszczenia złożonych zapytań  
   - **Funkcje okna** do analizy danych w obrębie określonych partycji
-    @ Funkcje okna do analizy danych w obrębie określonych partycji.
 
     
