@@ -6,9 +6,9 @@ The project utilized the following tools and techniques, with a particular focus
 
 Database Configuration:
 Database creation
-  @ Schema definition (e.g., karty schema)
-  @ Table creation
-  @ Data import
+  @Schema definition (e.g., karty schema)
+  @Table creation
+  @Data import
 
 Optimization and Analysis:
   @ Creating indexes on selected columns to improve query performance.
