@@ -39,7 +39,6 @@ COUNTRIES TEXT
 );
 
 # INSERT DATA INTO CARD.COUNTRIES
-
 INSERT INTO card.countries (code, countries) VALUES ('US','USA');
 INSERT INTO card.countries (code, countries) VALUES ('PL','Poland');
 INSERT INTO card.countries (code, countries) VALUES ('DE','Germany');
@@ -59,7 +58,6 @@ CURRENCY TEXT
 );
 
 # INSERT DATA INTO CARD.CURRENCY_CODE 
-
 Insert into card.currency_code (code,currency) values ('985','PLN');
 Insert into card.currency_code (code,currency) values ('840','USD');
 Insert into card.currency_code (code,currency) values ('978','EUR');
