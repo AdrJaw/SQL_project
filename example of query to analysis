@@ -1,7 +1,79 @@
--- Full table query
+---------------------------------------------------------------------- UPDATE -------------------------------------------------------------------------
+
+-- Update: correct the first letter of the card number to '5' for MasterCard, 
+-- and update the card organization name to 'Mastercard'
+UPDATE card.card_transaction
+SET card_number = '5' || SUBSTRING(card_number FROM 2), card_issuer = 'Mastercard'
+WHERE card_issuer = 'MasterCard';
+
+-- Update: correct the first letter of the card number to '4' for Visa
+UPDATE card.card_transaction
+SET card_number = '4' || SUBSTRING(card_number FROM 2)
+WHERE card_issuer = 'Visa';
+
+-- UPDATE values in table CARD.CARD_TRANSACTION on transaction_type, transaction_channel, device_type as below:
+UPDATE CARD.CARD_TRANSACTION
+SET transaction_channel = 'in-store', device_type = 'POS terminal'
+WHERE transaction_type = 'chip';
+
+UPDATE CARD.CARD_TRANSACTION
+SET transaction_channel = 'in-store', device_type = 'POS terminal'
+WHERE transaction_type = 'contactless';
+
+UPDATE CARD.CARD_TRANSACTION
+SET transaction_channel = 'ATM', device_type = 'ATM', transaction_type = 'Withdraw'
+WHERE transaction_type = 'atm';
+
+UPDATE CARD.CARD_TRANSACTION
+SET transaction_channel = 'online',  device_type = 'N/A'
+WHERE transaction_type = 'ecomm' and device_type not in ('smartphone','tablet');
+
+UPDATE CARD.CARD_TRANSACTION
+SET transaction_channel = 'online'
+WHERE transaction_type = 'ecomm';	
+
+--Delete values form table CARD.CARD_TRANSACTION where transaction_type is moto:
+DELETE  from CARD.CARD_TRANSACTION
+WHERE transaction_type = 'moto'
+
+---------------------------------------------------------------------- CREATE -------------------------------------------------------------------------
+--Cerate view VI_card_transactions
+CREATE OR REPLACE VIEW card.VI_card_transactions AS
+SELECT
+	T.ID,
+	T.TRANSACTION_DATE,
+	T.TRANSACTION_TIME,
+	T.AMOUNT,
+	CC.CURRENCY,
+	T.TRANSACTION_TYPE,
+	T.CATEGORY,
+	T.MERCHANT_CODE,
+	T.MERCHANT_NAME,
+	C.COUNTRIES as merchant_country,
+	T.CARD_TYPE,
+	T.CARD_NUMBER,
+	T.CARD_HOLDER_FIRST_NAME,
+	T.CARD_HOLDER_LAST_NAME,
+	T.CARD_EXPIRY_DATE,
+	T.CARD_ISSUER,
+	T.TRANSACTION_STATUS,
+	T.TRANSACTION_CHANNEL,
+	T.DEVICE_TYPE,
+	T.IP_ADDRESS,
+	T.FRAUD_FLAG,
+	T.CHARGEBACK_FLAG,
+	T.TRANSACTION_REFERENCE,
+	T.CUSTOMER_ID
+FROM
+	CARD.CARD_TRANSACTION T
+	JOIN CARD.COUNTRIES C ON T.MERCHANT_COUNTRY = C.CODE
+	JOIN CARD.CURRENCY_CODE CC ON T.CURRENCY_CODE = CC.CODE
+
+---------------------------------------------------------------------- QUERY -------------------------------------------------------------------------
+-- Full table query on 
 SELECT
 	ID,
-	TRANSACTION_DATE,
+	TRANSACTION_DATE,`
 	TRANSACTION_TIME,
 	AMOUNT,
 	CURRENCY_CODE,
@@ -26,18 +98,6 @@ SELECT
 	CUSTOMER_ID
 FROM
 	CARD.CARD_TRANSACTION;
-
--- Update: correct the first letter of the card number to '5' for MasterCard, 
--- and update the card organization name to 'Mastercard'
-UPDATE card.card_transaction
-SET card_number = '5' || SUBSTRING(card_number FROM 2), card_issuer = 'Mastercard'
-WHERE card_issuer = 'MasterCard';
-
-
--- Update: correct the first letter of the card number to '4' for Visa
-UPDATE card.card_transaction
-SET card_number = '4' || SUBSTRING(card_number FROM 2)
-WHERE card_issuer = 'Visa';
 
 
 -- LEFT JOIN - match country code and currecy name 
@@ -71,6 +131,7 @@ FROM
 	CARD.CARD_TRANSACTION T
 	LEFT JOIN CARD.CURRENCY_CODE C ON T.CURRENCY_CODE = C.CODE
 
+
 -- LEFT JOIN - match countries code and countries name
 SELECT
 	ID,
@@ -101,7 +162,6 @@ SELECT
 FROM
 	CARD.CARD_TRANSACTION T
 	LEFT JOIN CARD.COUNTRIES C ON T.MERCHANT_COUNTRY = C.CODE
-
 
 -- JOIN - match currency name and countries name with currency code and currency name
 SELECT
@@ -135,5 +195,18 @@ FROM
 	JOIN CARD.CURRENCY_CODE CC ON T.CURRENCY_CODE = CC.CODE
 
 
+-- For each card issuer, you get a single number — how many transactions were made with cards from that issuer.
+SELECT
+	card_issuer, count(*)
+FROM
+	CARD.VI_CARD_TRANSACTIONS
+	group by 1
 
+
+-- For each combination of card issuer and currency, you get the total transaction amount and the number of transactions.
+SELECT 
+	card_issuer, sum(amount),currency ,count(*)
+FROM
+	CARD.VI_CARD_TRANSACTIONS
+	group by 1,3
 
