@@ -171,16 +171,53 @@ FROM
 
 
 -- For each combination of card issuer and currency, you get the total transaction amount and the number of transactions.
-SELECT 
-	card_issuer, sum(amount),currency ,count(*)
-FROM
-	CARD.VI_CARD_TRANSACTIONS
-	group by 1,3
+SELECT card_issuer, sum(amount),currency ,count(*) 
+FROM CARD.VI_CARD_TRANSACTIONS
+GROUP BY 1,3
 
---Window function to calculate the sum of transaction amounts by currency for customer_id = 'CUST90540'
-
+--Window function that calculates the total transaction amount per currency for customer_id = 'CUST90540'
 SELECT id, transaction_date, transaction_time, amount, currency, 
 sum(amount) OVER (PARTITION by currency ORDER BY transaction_date, transaction_time) as sum_of_transaction_amount_by_currency
-	FROM card.vi_card_transactions
-	WHERE customer_id = 'CUST90540'
+FROM card.vi_card_transactions
+WHERE customer_id = 'CUST90540'
+
+
+--CTE used to analyze the total transaction amount grouped by card type. and currency
+WITH CTE_CARD_TRANSACTION as (
+SELECT
+	T.ID,
+	T.TRANSACTION_DATE,
+	T.TRANSACTION_TIME,
+	T.AMOUNT,
+	CC.CURRENCY,
+	T.TRANSACTION_TYPE,
+	T.CATEGORY,
+	T.MERCHANT_CODE,
+	T.MERCHANT_NAME,
+	C.COUNTRIES as merchant_country,
+	T.CARD_TYPE,
+	T.CARD_NUMBER,
+	T.CARD_HOLDER_FIRST_NAME,
+	T.CARD_HOLDER_LAST_NAME,
+	T.CARD_EXPIRY_DATE,
+	T.CARD_ISSUER,
+	T.TRANSACTION_STATUS,
+	T.TRANSACTION_CHANNEL,
+	T.DEVICE_TYPE,
+	T.IP_ADDRESS,
+	T.FRAUD_FLAG,
+	T.CHARGEBACK_FLAG,
+	T.TRANSACTION_REFERENCE,
+	T.CUSTOMER_ID
+FROM
+	CARD.CARD_TRANSACTION T
+	JOIN CARD.COUNTRIES C ON T.MERCHANT_COUNTRY = C.CODE
+	JOIN CARD.CURRENCY_CODE CC ON T.CURRENCY_CODE = CC.CODE
+WHERE C.COUNTRIES = 'Poland'
+	
+)
+
+SELECT card_type, to_char(transaction_date, 'YYYY-MM')as "month", sum(amount), CURRENCY from CTE_CARD_TRANSACTION
+WHERE TRANSACTION_TYPE = 'Withdraw'
+Group by 1,2,4
 
