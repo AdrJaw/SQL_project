@@ -1,6 +1,6 @@
-# **_SQL projects_**
+# 📊  **_SQL Projects_**
 
-## 📊 English Version
+## 🇬🇧
 
 This project involves an **analysis of a business problem** using a sample database of card transactions.  
 The goal was to identify key issues and propose solutions based on data analysis.  
@@ -21,7 +21,7 @@ The project utilized the following tools and techniques, with a particular focus
   - **Views** to simplify complex queries  
   - **Window functions** for partitioned data analysis  
 
-## 📊  Wersja Polska
+## 🇵🇱
 
 W ramach tego projektu przeprowadzono **analizę problemu biznesowego** na podstawie przykładowej bazy danych transakcji kartowych.  
 Celem było zidentyfikowanie kluczowych kwestii i zaproponowanie rozwiązań.  
